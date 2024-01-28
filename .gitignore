@@ -1,0 +1,11 @@
+**/*.gif
+
+
+bin
+obj
+
+
+.vscode
+Properties
+
+appsettings.*.json
