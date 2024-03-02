@@ -2,22 +2,24 @@ using System.Net.Http.Headers;
 
 namespace com.tandell.nws_radar_looper.Dto;
 
-public class HeaderDto {
-    public string ETag {get; set;} = "";
-    public DateTimeOffset? Date {get; set;}
-    public DateTimeOffset? LastModified {get; set;}
-    public Uri? Url {get; set;}
-    public int CacheControl {get; set;} = 0;
-    public long ContentLength {get; set;} = -1;
-    public string ContentType {get; set;} = "";
+public class HeaderDto
+{
+    public string ETag { get; set; } = "";
+    public DateTimeOffset? Date { get; set; }
+    public DateTimeOffset? LastModified { get; set; }
+    public Uri? Url { get; set; }
+    public int CacheControl { get; set; } = 0;
+    public long ContentLength { get; set; } = -1;
+    public string ContentType { get; set; } = "";
 
-    public string FileName( ) {
+    public string FileName()
+    {
         // TODO: The DateTime.UtcNow should be defaulted when the HeaderDto is initialized...
         DateTimeOffset date = LastModified ?? Date ?? DateTime.UtcNow;
 
         // TODO: Pull pattern from configuration or default.
         string pattern = "yyyyMMddTHHmmK";
-        
+
         var filename = date.UtcDateTime.ToUniversalTime().ToString(pattern);
 
         return filename;
@@ -33,21 +35,23 @@ public class HeaderDto {
     /// </summary>
     /// <param name="response">The HttpResponseMessage to interrogate for information</param>
     /// <returns>The HeaderDto that contains the information in the response</returns>
-    public static HeaderDto ToHeaderDto( HttpResponseMessage response) {
+    public static HeaderDto ToHeaderDto(HttpResponseMessage response)
+    {
         if (response is null)
         {
             return new HeaderDto();
         }
 
         var headers = response.Headers;
-        
-        return new HeaderDto{
+
+        return new HeaderDto
+        {
             Url = response.RequestMessage?.RequestUri ?? null,
             ETag = headers.ETag?.Tag ?? "",
             Date = headers.Date?.UtcDateTime,
             CacheControl = ParseMaxAge(headers.CacheControl),
             ContentLength = response.Content?.Headers?.ContentLength ?? -1,
-            ContentType = response.Content?.Headers?.ContentType?.ToString() ?? "", 
+            ContentType = response.Content?.Headers?.ContentType?.ToString() ?? "",
             LastModified = response.Content?.Headers?.LastModified
         };
     }
@@ -58,19 +62,24 @@ public class HeaderDto {
     /// </summary>
     /// <param name="cachecontrol">The Cache-Control header to pull the max-age from</param>
     /// <returns>The number of seconds the Cache-Control max-age is set for; or default</returns>
-    private static int ParseMaxAge( CacheControlHeaderValue? cachecontrol ) {
+    private static int ParseMaxAge(CacheControlHeaderValue? cachecontrol)
+    {
         int defaultValue = 60;
 
         var maxAge = cachecontrol?.MaxAge;
-        if( !maxAge.HasValue ) {
+        if (!maxAge.HasValue)
+        {
             return defaultValue;
         }
 
         var totalSeconds = (int)maxAge.Value.TotalSeconds;
 
-        if( totalSeconds < 1 ) {
+        if (totalSeconds < 1)
+        {
             return defaultValue;
-        } else {
+        }
+        else
+        {
             return totalSeconds;
         }
     }
