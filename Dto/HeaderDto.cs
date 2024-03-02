@@ -1,21 +1,18 @@
 using System.Net.Http.Headers;
 
-namespace com.tandell.nws_radar_looper;
+namespace com.tandell.nws_radar_looper.Dto;
 
 public class HeaderDto {
     public string ETag {get; set;} = "";
-
     public DateTimeOffset? Date {get; set;}
     public DateTimeOffset? LastModified {get; set;}
-
     public Uri? Url {get; set;}
-
     public int CacheControl {get; set;} = 0;
-
     public long ContentLength {get; set;} = -1;
     public string ContentType {get; set;} = "";
 
     public string FileName( ) {
+        // TODO: The DateTime.UtcNow should be defaulted when the HeaderDto is initialized...
         DateTimeOffset date = LastModified ?? Date ?? DateTime.UtcNow;
 
         // TODO: Pull pattern from configuration or default.
@@ -31,6 +28,11 @@ public class HeaderDto {
         return $"{Url} - {Date} - {ETag} - {CacheControl} - {ContentType} - {ContentLength} - {FileName()}";
     }
 
+    /// <summary>
+    /// Create the HeaderDto from the provided HttpResponseMessage.
+    /// </summary>
+    /// <param name="response">The HttpResponseMessage to interrogate for information</param>
+    /// <returns>The HeaderDto that contains the information in the response</returns>
     public static HeaderDto ToHeaderDto( HttpResponseMessage response) {
         if (response is null)
         {

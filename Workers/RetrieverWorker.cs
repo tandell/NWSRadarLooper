@@ -1,6 +1,12 @@
-namespace com.tandell.nws_radar_looper;
+using com.tandell.nws_radar_looper.Dto;
 
-public class Worker(NwsClient client, ILogger<Worker> logger) : BackgroundService
+namespace com.tandell.nws_radar_looper.Workers;
+
+/// <summary>
+/// RetrieverWorker is the BackgroundService that retrieves the radar images from the NWS.
+/// Currently does not support support multiple stations.
+/// </summary>
+public class RetrieverWorker(NwsClient client, ILogger<RetrieverWorker> logger) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
