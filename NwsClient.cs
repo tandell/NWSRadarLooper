@@ -3,7 +3,7 @@ using com.tandell.nws_radar_looper.Dto;
 
 namespace com.tandell.nws_radar_looper;
 
-public class NwsClient(NwsHttpClient nwsHttpClient, ILogger<NwsClient> logger)
+public class NwsClient(NwsHttpClient nwsHttpClient, SettingsDto settings, ILogger<NwsClient> logger)
 {
     public async Task<HeaderDto> GetImage(HeaderDto? priorHeaders = null)
     {
@@ -50,7 +50,7 @@ public class NwsClient(NwsHttpClient nwsHttpClient, ILogger<NwsClient> logger)
         var responseHeaders = HeaderDto.ToHeaderDto(response);
 
         var filename = responseHeaders.FileName();
-        var tempfile = filename + ".gif";
+        var tempfile = settings.BasePath + filename + ".gif";
         logger.LogInformation("Saving image to {Filename}", tempfile);
 
         int opt = 0;
@@ -58,7 +58,7 @@ public class NwsClient(NwsHttpClient nwsHttpClient, ILogger<NwsClient> logger)
         {
             //File already exists! [20240302T1843Z.gif] Last-Modified: [03/02/2024 18:43:17 +00:00] Date: [03/02/2024 18:52:32 +00:00]
             logger.LogError("File already exists! [{Filename}] Last-Modified: [{LastModified}] Date: [{Date}]", tempfile, responseHeaders.LastModified, responseHeaders.Date);
-            tempfile = filename + "-" + opt + ".gif";
+            tempfile = settings.BasePath + filename + "-" + opt + ".gif";
             opt++;
         }
 
