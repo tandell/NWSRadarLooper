@@ -12,23 +12,9 @@ public class HeaderDto
     public long ContentLength { get; set; } = -1;
     public string ContentType { get; set; } = "";
 
-    public string FileName()
-    {
-        // TODO: The DateTime.UtcNow should be defaulted when the HeaderDto is initialized...
-        DateTimeOffset date = LastModified ?? Date ?? DateTime.UtcNow;
-
-        // TODO: Pull pattern from configuration or default.
-        string pattern = "yyyyMMddTHHmmK";
-
-        var filename = date.UtcDateTime.ToUniversalTime().ToString(pattern);
-
-
-        return filename;
-    }
-
     public override string ToString()
     {
-        return $"{Url} - {Date} - {ETag} - {CacheControl} - {ContentType} - {ContentLength} - {FileName()}";
+        return $"{Url} - {Date} - {ETag} - {CacheControl} - {ContentType} - {ContentLength} - {LastModified}";
     }
 
     /// <summary>

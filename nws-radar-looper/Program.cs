@@ -20,6 +20,7 @@ services.AddHttpClient("NWS", (serviceProvider, client) =>
 
 services.AddSingleton<NwsHttpClient>();
 services.AddSingleton<NwsClient>();
+services.AddSingleton<FileHandler>();
 services.AddSingleton<SettingsDto>(settings);
 
 

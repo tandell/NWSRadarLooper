@@ -1,11 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
-
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-nws_radar_looper-3adf4c36-ffc6-4b2c-85d1-61b5b292a681</UserSecretsId>
     <RootNamespace>nws_radar_looper</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- AOT Configuration -->
+    <!-- <PublishAot>true</PublishAot> -->
+    <!-- <IsAotCompatible>true</IsAotCompatible> -->
   </PropertyGroup>
 
   <ItemGroup>

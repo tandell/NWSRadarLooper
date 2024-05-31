@@ -3,16 +3,26 @@ using com.tandell.nws_radar_looper.Dto;
 
 namespace com.tandell.nws_radar_looper;
 
-public class NwsClient(NwsHttpClient nwsHttpClient, SettingsDto settings, ILogger<NwsClient> logger)
+public class NwsClient(NwsHttpClient nwsHttpClient, SettingsDto settings, FileHandler fileHandler, ILogger<NwsClient> logger)
 {
+    private static string API_PATH = "ridge/standard/";
+
+    /// <summary>
+    /// Retrieve the current simple radar image; accounting for duplicates and such.
+    /// </summary>
+    /// <param name="priorHeaders">The headers for the prior image, or null</param>
+    /// <returns>The headers of the retrieved image</returns>
     public async Task<HeaderDto> GetImage(HeaderDto? priorHeaders = null)
     {
+        // Image name is the station followed by _<image number>.gif; where 0 is the most recent image.
+        string imageName = $"{settings.Station}_0.gif";
+
         string expectedEtag = string.Empty;
 
         // If the priorHeaders is present, execute a HEAD request and only proceed if the ETags don't match.
         if (priorHeaders != null)
         {
-            var headHeader = await GetCurrentImageHead("KCBX_0.gif");
+            var headHeader = await GetCurrentImageHead(imageName);
             logger.LogDebug("Current Image Header: {Header}", headHeader.ToString());
             if (headHeader.ETag == priorHeaders.ETag)
             {
@@ -22,7 +32,7 @@ public class NwsClient(NwsHttpClient nwsHttpClient, SettingsDto settings, ILogge
             expectedEtag = headHeader.ETag;
         }
 
-        var currentHeader = await GetCurrentImage("KCBX_0.gif");
+        var currentHeader = await GetCurrentImage(imageName);
         logger.LogDebug("New Current Header: {Header}", currentHeader.ToString());
 
         // At this point, check to see if the ETags between the current HEAD and the priorHeaders
@@ -36,41 +46,43 @@ public class NwsClient(NwsHttpClient nwsHttpClient, SettingsDto settings, ILogge
         // version.
         if (expectedEtag != string.Empty && expectedEtag != currentHeader.ETag)
         {
-
+            logger.LogError($"IMAGE MISSED. {expectedEtag}:{currentHeader.ETag}");
+            // TODO Retrieve previous
         }
 
         // No matter if we had to retrieve prior versions, return the current header.
         return currentHeader;
     }
 
+    /// <summary>
+    /// Retrieve the requested image name from the NWS. 
+    /// </summary>
+    /// <param name="imageName">The image name to request from NWS</param>
+    /// <returns>The headers of the call</returns>
     private async Task<HeaderDto> GetCurrentImage(string imageName)
     {
-        HttpResponseMessage response = await nwsHttpClient.Request(HttpMethod.Get, "ridge/standard/" + imageName);
+        HttpResponseMessage response = await nwsHttpClient.Request(HttpMethod.Get, API_PATH + imageName);
 
         var responseHeaders = HeaderDto.ToHeaderDto(response);
 
-        var filename = responseHeaders.FileName();
-        var tempfile = settings.BasePath + filename + ".gif";
-        logger.LogInformation("Saving image to {Filename}", tempfile);
+        var tempfile = fileHandler.GenerateFilename(responseHeaders);
 
-        int opt = 0;
-        while (Path.Exists(tempfile))
-        {
-            //File already exists! [20240302T1843Z.gif] Last-Modified: [03/02/2024 18:43:17 +00:00] Date: [03/02/2024 18:52:32 +00:00]
-            logger.LogError("File already exists! [{Filename}] Last-Modified: [{LastModified}] Date: [{Date}]", tempfile, responseHeaders.LastModified, responseHeaders.Date);
-            tempfile = settings.BasePath + filename + "-" + opt + ".gif";
-            opt++;
-        }
-
-        // TODO: After saving, if we had a file name collision, md5sum the two images. If they're the same, just remove the extra files.
-
-        using (FileStream fs = new FileStream(tempfile, FileMode.CreateNew))
+        // TODO: Move logic to fileHandler class.
+        // TODO: After saving, if we had a file name collision, md5sum the two images. 
+        // If they're the same, just remove the extra files.
+        using (FileStream fs = new FileStream(tempfile.Filename, FileMode.CreateNew))
         using (Stream input = response.Content.ReadAsStream())
         {
             input.CopyTo(fs);
         }
 
         response.Dispose();
+
+        if( tempfile.ExistedPrior ) {
+            // TODO Handle duplicates/invalid naming.
+            logger.LogInformation("Duplicate filename detected");
+        }
+        
         return responseHeaders;
     }
 
@@ -82,7 +94,7 @@ public class NwsClient(NwsHttpClient nwsHttpClient, SettingsDto settings, ILogge
     /// <returns>The headers of the call</returns>
     private async Task<HeaderDto> GetCurrentImageHead(string imageName)
     {
-        HttpResponseMessage response = await nwsHttpClient.Request(HttpMethod.Head, "ridge/standard/" + imageName);
+        HttpResponseMessage response = await nwsHttpClient.Request(HttpMethod.Head, API_PATH + imageName);
 
         var responseHeaders = HeaderDto.ToHeaderDto(response);
 

@@ -8,12 +8,16 @@ This program will continuously download the radar images and save them to a loca
 
 ## Configuration Item Descriptions
 
-- `BasePath`: The location where to save the retrieved images. 
-- `DatePattern`: To keep the filenames unique and sortable, the current timestamp is leveraged. This is the format applied to the date so it's compact and scriptable.
-- `NwsRestApiUrl`: The base URL for the National Weather Service REST API.
+- `BasePath`: The location where to save the retrieved images
+- `DatePattern`: To keep the filenames unique and sortable, the current timestamp is leveraged. This is the format applied to the date so it's compact and scriptable
+- `NwsRestApiUrl`: The base URL for the National Weather Service REST API
+- `Station`: The NWS Station Id for the radar images; e.g. KIWA, KCBX, etc
 
 ## Future Enhancements
 
+- Deal with duplicate radar images
+- Deal with missing radar images
+- Figure out how to generate binaries
 - Configuration: currently everything is hardcoded. At the very least, the station should be customizable. e.g. kiwa for Arizona, etc.
 - The images should be saved in a directory structure of something like `<basepath>/<station>/timestamp.gif`
 - create animated gifs from the prior set of images for displaying loops
