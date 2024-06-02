@@ -5,7 +5,7 @@ namespace com.tandell.nws_radar_looper.Dto;
 public class HeaderDto
 {
     public string ETag { get; set; } = "";
-    public DateTimeOffset? Date { get; set; }
+    public DateTimeOffset? Date { get; set; } = DateTime.UtcNow;
     public DateTimeOffset? LastModified { get; set; }
     public Uri? Url { get; set; }
     public int CacheControl { get; set; } = 0;

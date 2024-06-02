@@ -26,4 +26,16 @@ public class RetrieverWorker(NwsClient client, ILogger<RetrieverWorker> logger) 
             await Task.Delay(delay, stoppingToken);
         }
     }
+
+  public override async Task StartAsync(CancellationToken cancellationToken) 
+  {
+    logger.LogDebug("Starting NWS Stadard Radar Region Retriever");
+    await base.StartAsync(cancellationToken);
+  }
+
+  public override async Task StopAsync(CancellationToken cancellationToken)
+  {
+    logger.LogDebug("Stopping NWS Stadard Radar Region Retriever");
+    await base.StopAsync(cancellationToken);
+  }
 }

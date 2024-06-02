@@ -44,6 +44,10 @@ public class NwsClient(NwsHttpClient nwsHttpClient, SettingsDto settings, FileHa
         //
         // I _think_ we can compare the direct files, but the -1 file will be different than -0 
         // version.
+        //
+        // Upated - Etag and last-modified remain the same however, it's not certain which suffix 
+        // will have the prior image. It _seems_ there's a bit of lag between the images being 
+        // refreshed on _0 and it showing up on _1.
         if (expectedEtag != string.Empty && expectedEtag != currentHeader.ETag)
         {
             logger.LogError($"IMAGE MISSED. {expectedEtag}:{currentHeader.ETag}");
@@ -82,6 +86,9 @@ public class NwsClient(NwsHttpClient nwsHttpClient, SettingsDto settings, FileHa
             // TODO Handle duplicates/invalid naming.
             logger.LogInformation("Duplicate filename detected");
         }
+
+        var md5hash = fileHandler.ComputeFileHash(tempfile.Filename);
+        logger.LogInformation($"{tempfile.Filename} : {md5hash}");
         
         return responseHeaders;
     }

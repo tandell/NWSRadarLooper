@@ -1,4 +1,5 @@
 using System.IO;
+using System.Text;
 using System.Security.Cryptography;
 
 using com.tandell.nws_radar_looper.Dto;
@@ -18,11 +19,12 @@ public class FileHandler(SettingsDto settings, ILogger<FileHandler> logger)
     /// </summary>
     /// <param name="filename">Fully qualified filename with path</param>
     /// <returns>The MD5 Hash of the provided filename</returns>
-    public byte[] ComputeFileHash(string filename)
+    public string ComputeFileHash(string filename)
     {
         using (var md5 = MD5.Create())
         {
-            return md5.ComputeHash(File.ReadAllBytes(filename));
+            var byteHash = md5.ComputeHash(File.ReadAllBytes(filename));
+            return BitConverter.ToString(byteHash).Replace("-","");
         }
     }
 
@@ -38,7 +40,7 @@ public class FileHandler(SettingsDto settings, ILogger<FileHandler> logger)
 
         var fileDto = new FileDto {
             BaseFilename = filename,
-            Filename = settings.BasePath + filename + ".gif"
+            Filename = settings.BasePath + filename + "-0.gif"
         };
 
         logger.LogInformation("Saving image to {Filename}", fileDto.Filename);
@@ -64,7 +66,6 @@ public class FileHandler(SettingsDto settings, ILogger<FileHandler> logger)
     /// <returns>The formatted base filename for later use</returns>
     private string DetermineFileDateName(HeaderDto headers)
     {
-        // TODO: The DateTime.UtcNow should be defaulted when the HeaderDto is initialized...
         DateTimeOffset date = headers.LastModified ?? headers.Date ?? DateTime.UtcNow;
 
         return date.UtcDateTime.ToUniversalTime().ToString(settings.Pattern);
@@ -92,5 +93,5 @@ public class FileDto
     /// <summary>
     /// The 'iteration' of the file. Anything greater than 0 means a duplicate
     /// </summary>
-    public int Iteration {get; set;} = 0;
+    public int Iteration {get; set;} = 1;
 }

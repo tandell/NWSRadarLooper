@@ -9,7 +9,12 @@ var builder = Host.CreateApplicationBuilder(args);
 
 var services = builder.Services;
 
-SettingsDto settings = builder.Configuration.GetRequiredSection("Settings").Get<SettingsDto>();
+SettingsDto? settings = builder.Configuration.GetRequiredSection("Settings")?.Get<SettingsDto>() ?? null;
+if( settings == null ) 
+{
+    //TODO figure out what to do in case of invalid configuration
+    throw new Exception("Invalid configuration, check README.md");
+}
 
 builder.Services.AddHostedService<RetrieverWorker>();
 
