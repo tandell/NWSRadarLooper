@@ -12,7 +12,7 @@ public class NwsClient(NwsHttpClient nwsHttpClient, SettingsDto settings, FileHa
     /// </summary>
     /// <param name="priorHeaders">The headers for the prior image, or null</param>
     /// <returns>The headers of the retrieved image</returns>
-    public async Task<HeaderDto> GetImage(HeaderDto? priorHeaders = null)
+    public async Task<HeaderDto> GetImage(HeaderDto priorHeaders)
     {
         // Image name is the station followed by _<image number>.gif; where 0 is the most recent image.
         string imageName = $"{settings.Station}_0.gif";
@@ -20,17 +20,22 @@ public class NwsClient(NwsHttpClient nwsHttpClient, SettingsDto settings, FileHa
         string expectedEtag = string.Empty;
 
         // If the priorHeaders is present, execute a HEAD request and only proceed if the ETags don't match.
-        if (priorHeaders != null)
+        if (!string.IsNullOrEmpty(priorHeaders.ETag))
         {
             var headHeader = await GetCurrentImageHead(imageName);
-            logger.LogDebug("Current Image Header: {Header}", headHeader.ToString());
+            logger.LogDebug("Prior ETag: [{PriorETag}]; Expected ETag: [{ExpectedETag}]", priorHeaders.ETag, headHeader.ETag);
+            
             if (headHeader.ETag == priorHeaders.ETag)
             {
+                // Return the new header since the various values might updated for the next attempt.
+                logger.LogDebug("Prior ETag detected, delaying longer");
                 return headHeader;
             }
 
             expectedEtag = headHeader.ETag;
         }
+
+        // There should be a new image to retrieve at this point.
 
         var currentHeader = await GetCurrentImage(imageName);
         logger.LogDebug("New Current Header: {Header}", currentHeader.ToString());
@@ -58,8 +63,48 @@ public class NwsClient(NwsHttpClient nwsHttpClient, SettingsDto settings, FileHa
         return currentHeader;
     }
 
+    public async Task<HeaderDto> GetImage(int iteration) {
+        // Image name is the station followed by _<image number>.gif; where 0 is the most recent image.
+        string imageName = $"{settings.Station}_{iteration}.gif";
+        var currentHeader = await GetCurrentImage(imageName);
+
+        return currentHeader;
+    }
+
+    private async Task<HeaderDto> GetLatestRadarImage(string imageName, string expectedETag) {
+
+        /*
+
+        1) Get initial radar image
+        2) Check initial etag with expected etag
+
+
+
+
+        */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        return null;
+    }
+
     /// <summary>
-    /// Retrieve the requested image name from the NWS. 
+    /// Retrieve the requested image name from the NWS.
     /// </summary>
     /// <param name="imageName">The image name to request from NWS</param>
     /// <returns>The headers of the call</returns>

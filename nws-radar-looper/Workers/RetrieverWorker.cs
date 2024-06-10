@@ -8,34 +8,50 @@ namespace com.tandell.nws_radar_looper.Workers;
 /// </summary>
 public class RetrieverWorker(NwsClient client, ILogger<RetrieverWorker> logger) : BackgroundService
 {
+    private HeaderDto responseDto = new HeaderDto();
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        // Should this be an instance variable?
         Random random = new Random();
 
-        HeaderDto responseDto = new HeaderDto();
         while (!stoppingToken.IsCancellationRequested)
         {
-            if (logger.IsEnabled(LogLevel.Information))
-            {
-                logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-            }
+            logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
             responseDto = await client.GetImage(responseDto);
-
             int delay = (responseDto.CacheControl + random.Next(5, 20)) * 1000;
+
+            logger.LogInformation("Next run scheduled in {Delay} seconds", Math.Ceiling(delay/1000.0));
             await Task.Delay(delay, stoppingToken);
         }
     }
 
-  public override async Task StartAsync(CancellationToken cancellationToken) 
-  {
-    logger.LogDebug("Starting NWS Stadard Radar Region Retriever");
-    await base.StartAsync(cancellationToken);
-  }
+    /// <summary>
+    /// On start logic for the RetrieverWorker. Preload existing radar images.
+    /// </summary>
+    public override async Task StartAsync(CancellationToken cancellationToken) 
+    {
+        logger.LogDebug("Starting NWS Stadard Radar Region Retriever");
 
-  public override async Task StopAsync(CancellationToken cancellationToken)
-  {
-    logger.LogDebug("Stopping NWS Stadard Radar Region Retriever");
-    await base.StopAsync(cancellationToken);
-  }
+        // At this point, retrieve images 0..9 to "preload".
+        // Note that the headers of the _0 call should be saved from the loop, that way there isn't a
+        // duplicate image on the first call of the service.
+        logger.LogDebug("Preloading current radar images...");
+        for(int i = 9; i >= 0; i--)
+        {
+          logger.LogDebug("> Retrieving Radar Image {Image}", i);
+          responseDto = await client.GetImage(i);
+        }
+        logger.LogDebug("Preloading Complete");
+
+        await base.StartAsync(cancellationToken);
+    }
+
+    // Not sure if this is needed.... eval and remove later.
+    public override async Task StopAsync(CancellationToken cancellationToken)
+    {
+        logger.LogDebug("Stopping NWS Stadard Radar Region Retriever");
+        await base.StopAsync(cancellationToken);
+    }
 }

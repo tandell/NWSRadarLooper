@@ -47,12 +47,13 @@ public class FileHandler(SettingsDto settings, ILogger<FileHandler> logger)
 
         while (Path.Exists(fileDto.Filename))
         {
-            fileDto.Iteration++;
             fileDto.Filename = settings.BasePath + filename + "-" + fileDto.Iteration + ".gif";
             fileDto.ExistedPrior = true;
 
             //File already exists! [20240302T1843Z.gif] Last-Modified: [03/02/2024 18:43:17 +00:00] Date: [03/02/2024 18:52:32 +00:00]
             logger.LogError("File already exists! [{Filename}] Last-Modified: [{LastModified}] Date: [{Date}]", fileDto.Filename, headers.LastModified, headers.Date);
+
+            fileDto.Iteration++; // DTO starts at 1, so we post bump the iteration.
         }
 
         return fileDto;
@@ -72,6 +73,7 @@ public class FileHandler(SettingsDto settings, ILogger<FileHandler> logger)
     }
 }
 
+// TODO: Move this to Dto land
 public class FileDto 
 {
     /// <summary>
