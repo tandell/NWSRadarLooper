@@ -17,6 +17,7 @@ if( settings == null )
 }
 
 builder.Services.AddHostedService<RetrieverWorker>();
+builder.Services.AddHostedService<CleanupWorker>();
 
 services.AddHttpClient("NWS", (serviceProvider, client) =>
 {
@@ -24,7 +25,11 @@ services.AddHttpClient("NWS", (serviceProvider, client) =>
 });
 
 services.AddSingleton<NwsHttpClient>();
+
+// Hosted Worker Clients
 services.AddSingleton<NwsClient>();
+services.AddSingleton<FileClient>();
+
 services.AddSingleton<FileHandler>();
 services.AddSingleton<SettingsDto>(settings);
 
