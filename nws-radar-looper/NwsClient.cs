@@ -71,38 +71,6 @@ public class NwsClient(NwsHttpClient nwsHttpClient, SettingsDto settings, FileHa
         return currentHeader;
     }
 
-    private async Task<HeaderDto> GetLatestRadarImage(string imageName, string expectedETag) {
-
-        /*
-
-        1) Get initial radar image
-        2) Check initial etag with expected etag
-
-
-
-
-        */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        return null;
-    }
-
     /// <summary>
     /// Retrieve the requested image name from the NWS.
     /// </summary>
