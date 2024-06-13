@@ -11,6 +11,8 @@ This program will continuously download the radar images and save them to a loca
 In the configuration, it requires a radar station to be provided. There's not a good listing of available stations so the following are provided for ease of use. Other stations can be interactively discovered at https://radar.weather.gov/ 
 
 - `CONUS` - Entire continential United States aggregate image
+  - https://radar.weather.gov/ridge/standard/CONUS_0.gif
+  - https://radar.weather.gov/ridge/standard/CONUS_loop.gif
 - `KIWA` - Arizona
 - `KCBX` - Western Idaho
 - `KSFX` - Eastern Idaho
@@ -37,6 +39,13 @@ In the configuration, it requires a radar station to be provided. There's not a 
 - Configuration: currently everything is hardcoded. At the very least, the station should be customizable. e.g. kiwa for Arizona, etc.
 - The images should be saved in a directory structure of something like `<basepath>/<station>/timestamp.gif`
 - create animated gifs from the prior set of images for displaying loops
+  - https://www.nuget.org/packages/Aspose.Imaging/
+  - https://github.com/dlemstra/Magick.NET/blob/main/docs/CombiningImages.md
+  - https://github.com/dlemstra/Magick.NET/blob/main/docs/ResizeImage.md
+  - https://github.com/dlemstra/Magick.NET/blob/main/docs/Readme.md
+  - https://github.com/dlemstra/Magick.NET/blob/main/docs/CrossPlatform.md
+  - https://github.com/dlemstra/Magick.NET
+  - https://kb.aspose.com/imaging/net/how-to-create-gif-from-images-in-csharp/
 - create a systemd file to keep this running if it dies.
 - Per https://weather-gov.github.io/api/general-faqs, NWS wants an email in the User-Agent header. 
   - Create a settings section for "information". Don't run w/o the email.
@@ -44,3 +53,8 @@ In the configuration, it requires a radar station to be provided. There's not a 
 
 
 - Save headers to json for later processing.
+
+## References
+
+- https://wildermuth.com/2022/05/04/using-background-services-in-asp-net-core/
+- https://radar.weather.gov/region/conus/standard

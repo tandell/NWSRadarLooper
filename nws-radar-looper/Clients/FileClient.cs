@@ -17,7 +17,7 @@ public class FileClient(SettingsDto settings, ILogger<FileClient> logger){
         var directory = new DirectoryInfo(basepath);
         // TODO: Convert the hours into a settings option.
         var files = directory.EnumerateFiles()
-            .Where(f => f.LastWriteTimeUtc < currentTimeUtc.AddHours(-24))
+            .Where(f => f.LastWriteTimeUtc < currentTimeUtc.AddHours(-24) && f.Extension == ".gif")
             .OrderByDescending(f => f.LastWriteTime);
         logger.LogInformation(">>> Current Time: {Time}", currentTimeUtc);
         
@@ -35,8 +35,7 @@ public class FileClient(SettingsDto settings, ILogger<FileClient> logger){
 
                 // Determine if the archive file is already open. If it's not, open it and cache
                 // the object for later use.
-                // TODO: Figure out "Converting null literal or possible null value to non-nullable type." on the out param.
-                if(!archives.TryGetValue(filedate, out ZipArchive archive) ) 
+                if(!archives.TryGetValue(filedate, out ZipArchive? archive) ) 
                 {
                     logger.LogDebug("Opening new archive with name [{name}]", archiveFileName);
                     // TODO once the path information is determined above, no need for zipPath.
@@ -45,14 +44,17 @@ public class FileClient(SettingsDto settings, ILogger<FileClient> logger){
                     archives.Add(filedate, archive);
                 }
                 
+                // At this point, we're just doing a filename match and shoving files into various 
+                // zipfiles before deleting the file. In theory, we could store the MD5 of the file
+                // as a comment.... and then leverage that to make sure the files are the same
+                // before ignoring them.
                 if( !archive.Entries.Any(entry => entry.Name == file.Name) )
                 { 
                     logger.LogInformation("Adding file [{filename}] to archive", file.Name);
                     archive.CreateEntryFromFile(file.FullName, file.Name);
-                } 
-                else
-                {
-                    logger.LogInformation("File NOT added due to file already existing in archive");
+                    logger.LogInformation("Removing file [{filename}] from system", file.Name);
+                    // Danger; commit before next run. Make sure all zip files created only have gifs in them.
+                    //file.Delete();
                 }
             }
         } finally {
@@ -67,6 +69,6 @@ public class FileClient(SettingsDto settings, ILogger<FileClient> logger){
     string ConvertTimestampToPattern(DateTimeOffset dateTime)
     {
         // TODO: Whoops, need to customize the pattern. Just need yyyyMMdd.zip
-        return dateTime.UtcDateTime.ToUniversalTime().ToString(settings.Pattern);
+        return dateTime.UtcDateTime.ToUniversalTime().ToString("yyyyMMdd");
     }
 }

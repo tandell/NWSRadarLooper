@@ -14,14 +14,31 @@ public class RetrieverWorker(NwsClient client, ILogger<RetrieverWorker> logger) 
     {
         // Should this be an instance variable?
         Random random = new Random();
+        int delay;
+        int sequentialFailures = 0;
 
         while (!stoppingToken.IsCancellationRequested)
         {
             logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-
-            responseDto = await client.GetImage(responseDto);
-            int delay = (responseDto.CacheControl + random.Next(5, 20)) * 1000;
-
+            try
+            {
+                responseDto = await client.GetImage(responseDto);
+                delay = (responseDto.CacheControl + random.Next(5, 20)) * 1000;
+                sequentialFailures = 0;
+            }
+            catch( Exception e ) 
+            {
+                // Should probably just do Polly for retrying
+                logger.LogError(e, "Error executing GetImage!");
+                delay = 20*1000;
+                if( sequentialFailures > 10 ) 
+                {
+                    logger.LogError("More than 10 sequential failures occurred, exiting");
+                    break;
+                }
+                sequentialFailures++;
+            }
+            
             logger.LogInformation("Next run scheduled in {Delay} seconds", Math.Ceiling(delay/1000.0));
             await Task.Delay(delay, stoppingToken);
         }
