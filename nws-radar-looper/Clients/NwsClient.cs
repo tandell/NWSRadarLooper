@@ -100,7 +100,7 @@ public class NwsClient(NwsHttpClient nwsHttpClient, SettingsDto settings, FileHa
             logger.LogInformation("Duplicate filename detected");
         }
 
-        var md5hash = fileHandler.ComputeFileHash(tempfile.Filename);
+        var md5hash = FileHandler.ComputeFileHash(tempfile.Filename);
         logger.LogInformation($"{tempfile.Filename} : {md5hash}");
         
         return responseHeaders;

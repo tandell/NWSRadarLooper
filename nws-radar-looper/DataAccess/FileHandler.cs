@@ -19,7 +19,7 @@ public class FileHandler(SettingsDto settings, ILogger<FileHandler> logger)
     /// </summary>
     /// <param name="filename">Fully qualified filename with path</param>
     /// <returns>The MD5 Hash of the provided filename</returns>
-    public string ComputeFileHash(string filename)
+    public static string ComputeFileHash(string filename)
     {
         using (var md5 = MD5.Create())
         {

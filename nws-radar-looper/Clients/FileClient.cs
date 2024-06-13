@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using com.tandell.nws_radar_looper.DataAccess;
 using com.tandell.nws_radar_looper.Dto;
 
 namespace com.tandell.nws_radar_looper;
@@ -50,8 +51,10 @@ public class FileClient(SettingsDto settings, ILogger<FileClient> logger){
                 // before ignoring them.
                 if( !archive.Entries.Any(entry => entry.Name == file.Name) )
                 { 
-                    logger.LogInformation("Adding file [{filename}] to archive", file.Name);
-                    archive.CreateEntryFromFile(file.FullName, file.Name);
+                    var filehash = FileHandler.ComputeFileHash(file.FullName);
+                    logger.LogInformation("Adding file [{filename}][{filehash}] to archive", file.Name, filehash);
+                    var entry = archive.CreateEntryFromFile(file.FullName, file.Name);
+                    entry.Comment = filehash;
                     logger.LogInformation("Removing file [{filename}] from system", file.Name);
                     // Danger; commit before next run. Make sure all zip files created only have gifs in them.
                     //file.Delete();
