@@ -27,16 +27,15 @@ In the configuration, it requires a radar station to be provided. There's not a 
 
 - `Storage`: Details of where to store the downloaded Radar images and such
 
-- `Archive:BasePath`: The path where the archives will be saved, needs to be readable/writable by the program
+- `Archive:BasePath`: The path where the archives will be saved, needs to be readable/writable by the program. The system will check that it exists and the permissions are correct.
 - `Archive:FilePattern`: This is the format applied to the date so it's compact and scriptable
-- `Archive:ArchiveDelay`: The number of hours a file needs to exist before it's available for archiving. e.g. If the value is set to 18, only files _older_ than 18 hours will be considered for archiving. 
+- `Archive:ArchiveDelay`: The number of hours a file needs to exist before it's available for archiving. e.g. If the value is set to 18, only files _older_ than 18 hours will be considered for archiving. This is based off of the last time the file was written.
 
 ## Future Enhancements
 
 - Deal with duplicate radar images
 - Deal with missing radar images
 - Figure out how to generate AOT binaries - that way we just have a single executable instead of a directory
-- Configuration: currently everything is hardcoded. At the very least, the station should be customizable. e.g. kiwa for Arizona, etc.
 - The images should be saved in a directory structure of something like `<basepath>/<station>/timestamp.gif`
 - create animated gifs from the prior set of images for displaying loops
   - https://www.nuget.org/packages/Aspose.Imaging/
@@ -46,13 +45,21 @@ In the configuration, it requires a radar station to be provided. There's not a 
   - https://github.com/dlemstra/Magick.NET/blob/main/docs/CrossPlatform.md
   - https://github.com/dlemstra/Magick.NET
   - https://kb.aspose.com/imaging/net/how-to-create-gif-from-images-in-csharp/
-- create a systemd file to keep this running if it dies.
+- Create a systemd file to run this as a service on linux
+  - keep this running if it dies.
+  - https://devblogs.microsoft.com/dotnet/net-core-and-systemd/
 - Per https://weather-gov.github.io/api/general-faqs, NWS wants an email in the User-Agent header. 
   - Create a settings section for "information". Don't run w/o the email.
   - Add the User-Agent header to all requests. 
+- Save headers to json for later processing - zip file entries can have a huge comment. Take the json file and insert it as a comment to the zip file. Determine json format for the comment as well.
 
+### Future future Enhancements
 
-- Save headers to json for later processing.
+- Provide a list of stations instead of just a single station
+
+## Cavets
+
+This project does create and delete files. While care has been taken to prevent unintended damage, there are no guarantees. Take care with the settings and verify them before executing.
 
 ## References
 
