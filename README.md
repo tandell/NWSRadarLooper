@@ -19,6 +19,8 @@ In the configuration, it requires a radar station to be provided. There's not a 
 - `KMAX` - Southern Oregon
 
 ## Configuration Item Descriptions
+- `Configuration:Fork`: The source version of the NWS Looper
+- `Configuration:Email`: A required point of contact email that the NWS requires; will be sent in plaintext with every request to the NWS. Per https://weather-gov.github.io/api/general-faqs
 
 - `Settings:BasePath`: The location where to save the retrieved images
 - `Settings:DatePattern`: To keep the filenames unique and sortable, the current timestamp is leveraged. This is the format applied to the date so it's compact and scriptable
@@ -29,15 +31,19 @@ In the configuration, it requires a radar station to be provided. There's not a 
 
 - `Archive:BasePath`: The path where the archives will be saved, needs to be readable/writable by the program. The system will check that it exists and the permissions are correct.
 - `Archive:FilePattern`: This is the format applied to the date so it's compact and scriptable
-- `Archive:ArchiveDelay`: The number of hours a file needs to exist before it's available for archiving. e.g. If the value is set to 18, only files _older_ than 18 hours will be considered for archiving. This is based off of the last time the file was written.
+- `Archive:ArchiveDelay`: The number of hours a file needs to exist before it's available for archiving. e.g. If the value is set to 18, only files _older_ than 18 hours will be considered for archiving. This is based off of the last time the file was modified.
+
+## Tasks
+
+- Validate that the `User-Agent` logic works as expected.
 
 ## Future Enhancements
 
 - Deal with duplicate radar images
 - Deal with missing radar images
 - Figure out how to generate AOT binaries - that way we just have a single executable instead of a directory
-- The images should be saved in a directory structure of something like `<basepath>/<station>/timestamp.gif`
-- create animated gifs from the prior set of images for displaying loops
+- The images should be saved in a directory structure of something like `<basepath>/<station>/timestamp.gif` so that multiple instance can be run concurrently without issue.
+- Create animated gifs from the prior set of images for displaying loops
   - https://www.nuget.org/packages/Aspose.Imaging/
   - https://github.com/dlemstra/Magick.NET/blob/main/docs/CombiningImages.md
   - https://github.com/dlemstra/Magick.NET/blob/main/docs/ResizeImage.md
@@ -45,17 +51,17 @@ In the configuration, it requires a radar station to be provided. There's not a 
   - https://github.com/dlemstra/Magick.NET/blob/main/docs/CrossPlatform.md
   - https://github.com/dlemstra/Magick.NET
   - https://kb.aspose.com/imaging/net/how-to-create-gif-from-images-in-csharp/
+  - https://learn.microsoft.com/en-us/dotnet/architecture/microservices/multi-container-microservice-net-applications/background-tasks-with-ihostedservice
 - Create a systemd file to run this as a service on linux
   - keep this running if it dies.
   - https://devblogs.microsoft.com/dotnet/net-core-and-systemd/
-- Per https://weather-gov.github.io/api/general-faqs, NWS wants an email in the User-Agent header. 
-  - Create a settings section for "information". Don't run w/o the email.
-  - Add the User-Agent header to all requests. 
+- Validate that the email for the User-Agent has been provided. Nothing fancy at first, just that there's a value.
 - Save headers to json for later processing - zip file entries can have a huge comment. Take the json file and insert it as a comment to the zip file. Determine json format for the comment as well.
+- When a new image is retrieved, it should a) be copied to a "current" image; b) trigger the animated gif logic so that a new loop is generated.
 
-### Future future Enhancements
+### Future Future Enhancements
 
-- Provide a list of stations instead of just a single station
+- Provide a list of stations instead of just a single station so that a single instance can be leveraged.
 
 ## Cavets
 

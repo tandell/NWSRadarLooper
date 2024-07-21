@@ -1,9 +1,8 @@
 **/*.gif
-
+**/*.png
 
 bin
 obj
-
 
 .vscode
 Properties
