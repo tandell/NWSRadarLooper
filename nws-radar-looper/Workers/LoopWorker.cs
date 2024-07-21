@@ -1,8 +1,10 @@
 namespace com.tandell.nws_radar_looper.Workers;
 
 /// <summary>
-/// RetrieverWorker is the BackgroundService that retrieves the radar images from the NWS.
-/// Currently does not support support multiple stations.
+/// LoopWorker sets up and executes the file system watcher that creates the gifs from the 
+/// downloaded images.
+/// The FileSystemWatcher logic is a bit strange in that it appears it's a TSR-type process.
+/// During the lifetime, it handles events automatically without having to poll the process.
 /// </summary>
 public class LoopWorker(FileClient fileClient, ILogger<LoopWorker> logger) : BackgroundService
 {
@@ -21,6 +23,7 @@ public class LoopWorker(FileClient fileClient, ILogger<LoopWorker> logger) : Bac
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation("Stopping Loop Creator Worker");
+        watcher.EnableRaisingEvents = false;
         await base.StopAsync(cancellationToken);
     }
 
