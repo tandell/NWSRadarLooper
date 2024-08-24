@@ -24,6 +24,7 @@ public class FileClient(ArchiveDto archiveConfiguration, SettingsDto settings, I
         return watcher;
     }
 
+    // Trigger fired when a file is changed on the system.
     private static void OnChanged(object sender, FileSystemEventArgs e)
     {
         // TODO: There _should_ be a way to pass in a logger instance. Looks like the 

@@ -58,6 +58,9 @@ In the configuration, it requires a radar station to be provided. There's not a 
 - Validate that the email for the User-Agent has been provided. Nothing fancy at first, just that there's a value.
 - Save headers to json for later processing - zip file entries can have a huge comment. Take the json file and insert it as a comment to the zip file. Determine json format for the comment as well.
 - When a new image is retrieved, it should a) be copied to a "current" image; b) trigger the animated gif logic so that a new loop is generated.
+- On start, verify requested directories are available and writable.
+  - If they don't exist, create them
+  - Exit cleanly with an understandable error message if the directory isn't writable
 
 ### Future Future Enhancements
 

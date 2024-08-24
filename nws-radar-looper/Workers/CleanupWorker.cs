@@ -1,8 +1,8 @@
 namespace com.tandell.nws_radar_looper.Workers;
 
 /// <summary>
-/// RetrieverWorker is the BackgroundService that retrieves the radar images from the NWS.
-/// Currently does not support support multiple stations.
+/// CleanupWorker is the BackgroundService that archives files older than the configured threshold
+/// and then removes the originals from the filesystem.
 /// </summary>
 public class CleanupWorker(FileClient fileClient, ILogger<CleanupWorker> logger) : BackgroundService
 {
