@@ -36,6 +36,7 @@ public class FileHandler(SettingsDto settings, ILogger<FileHandler> logger)
     /// <returns>FileDto configuration object; including the unique filename</returns>
     public FileDto GenerateFilename(HeaderDto headers)
     {
+        ValidateBasePath(settings.BasePath);
         var filename = DetermineFileDateName(headers);
 
         var fileDto = new FileDto {
@@ -70,6 +71,24 @@ public class FileHandler(SettingsDto settings, ILogger<FileHandler> logger)
         DateTimeOffset date = headers.LastModified ?? headers.Date ?? DateTime.UtcNow;
 
         return date.UtcDateTime.ToUniversalTime().ToString(settings.Pattern);
+    }
+
+    /// <summary>
+    /// Checks for the existance of the base path defined in the configuration. If this directory
+    /// doesn't exist, it attempts to create it.
+    /// <summary>
+    /// <param name="path">The directory path to validate</param>
+    private void ValidateBasePath(string path)
+    {
+        logger.LogInformation("Validating path [{Path}]", path);
+
+        if( !Directory.Exists(path))
+        {
+            logger.LogInformation("Creating path [{path}]", path);
+            Directory.CreateDirectory(path);
+        }
+
+        // TODO: At this point, check for the read/write permissions
     }
 }
 

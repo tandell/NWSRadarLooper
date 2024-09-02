@@ -23,11 +23,13 @@ public class LoopWorker(FileClient fileClient, ILogger<LoopWorker> logger) : Bac
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation("Stopping Loop Creator Worker");
+        // TODO warning CS8602: Dereference of a possibly null reference.
         watcher.EnableRaisingEvents = false;
         await base.StopAsync(cancellationToken);
     }
 
     // NOOP that BackgroundService requires
+    // TODO warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
     }

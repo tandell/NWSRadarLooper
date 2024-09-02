@@ -8,11 +8,10 @@ public class FileClient(ArchiveDto archiveConfiguration, SettingsDto settings, I
 {
 
     /// <summary>
-    /// Create and configure the file system watcher to trigger when a file is  written/changed.
+    /// Create and configure the file system watcher to trigger when a file is written/changed.
     /// </summary>    
     public FileSystemWatcher CreateFileWatcher() {
-        // TODO: Validate BasePath & create if missing
-
+        ValidateBasePath();
         FileSystemWatcher watcher = new FileSystemWatcher(settings.BasePath);
 
         watcher.NotifyFilter = NotifyFilters.LastWrite;
@@ -146,7 +145,8 @@ public class FileClient(ArchiveDto archiveConfiguration, SettingsDto settings, I
         // Check to see if the path exists and is a directory.
         if( !Directory.Exists(basepath) )
         {
-            throw new Exception("Archive:BasePath Invalid");
+            logger.LogInformation("Creating path [{path}] for FileClient", basepath);
+            Directory.CreateDirectory(basepath);
         }
     }
 }

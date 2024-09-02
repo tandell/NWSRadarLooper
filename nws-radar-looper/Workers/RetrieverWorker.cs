@@ -12,7 +12,6 @@ public class RetrieverWorker(NwsClient client, ILogger<RetrieverWorker> logger) 
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        // Should this be an instance variable?
         Random random = new Random();
         int delay;
         int sequentialFailures = 0;

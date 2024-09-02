@@ -87,6 +87,7 @@ public class NwsClient(NwsHttpClient nwsHttpClient, SettingsDto settings, FileHa
         // TODO: Move logic to fileHandler class.
         // TODO: After saving, if we had a file name collision, md5sum the two images. 
         // If they're the same, just remove the extra files.
+        // TODO: If the directory doesn't exist at this point, it pukes an exception.
         using (FileStream fs = new FileStream(tempfile.Filename, FileMode.CreateNew))
         using (Stream input = response.Content.ReadAsStream())
         {
@@ -97,13 +98,26 @@ public class NwsClient(NwsHttpClient nwsHttpClient, SettingsDto settings, FileHa
 
         if( tempfile.ExistedPrior ) {
             // TODO Handle duplicates/invalid naming.
-            logger.LogInformation("Duplicate filename detected");
+            
+            HandleDuplicate(tempfile);
         }
 
         var md5hash = FileHandler.ComputeFileHash(tempfile.Filename);
         logger.LogInformation($"{tempfile.Filename} : {md5hash}");
         
         return responseHeaders;
+    }
+
+    private async Task HandleDuplicate(FileDto duplicateFile) {
+        logger.LogInformation("Duplicate filename detected");
+
+        // At this point, figure out the 'basename' and the 'instance'. Parse out the instance -
+        // it should be an int. Figure out how many duplicates we're dealing with. (technically
+        // only should be 1 at this point...)
+
+        // MD5 #0, that's the reference image
+        // If any #1...#n images match that reference image - remove them.
+
     }
 
     /// <summary>
