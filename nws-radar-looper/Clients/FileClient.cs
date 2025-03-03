@@ -4,7 +4,7 @@ using com.tandell.nws_radar_looper.Dto;
 
 namespace com.tandell.nws_radar_looper;
 
-public class FileClient(ArchiveDto archiveConfiguration, SettingsDto settings, ILogger<FileClient> logger)
+public class FileClient(ArchiveDto archiveConfiguration, SettingsDto settings, FileHandler fileHandler, ILogger<FileClient> logger)
 {
 
     /// <summary>
@@ -24,21 +24,16 @@ public class FileClient(ArchiveDto archiveConfiguration, SettingsDto settings, I
     }
 
     // Trigger fired when a file is changed on the system.
-    private static void OnChanged(object sender, FileSystemEventArgs e)
+    private void OnChanged(object sender, FileSystemEventArgs e)
     {
-        // TODO: There _should_ be a way to pass in a logger instance. Looks like the 
-        // `watcher.Changed += OnChanged` seems to be the 'simple' way of registering events.
-        // https://learn.microsoft.com/en-us/dotnet/api/system.io.filesystemeventhandler?view=net-8.0
-        // https://learn.microsoft.com/en-us/dotnet/standard/events/
-        // https://learn.microsoft.com/en-us/dotnet/api/system.io.renamedeventhandler?view=net-8.0
-        // https://stackoverflow.com/questions/10863471/how-do-i-pass-a-variable-to-an-event-in-c
-        // https://stackoverflow.com/questions/55712573/access-method-from-filesystemwatcher-event-handler-in-c-sharp
         if (e.ChangeType != WatcherChangeTypes.Changed)
         {
             return;
         }
         //logger.LogInformation("Changed: {FullPath}", e.FullPath);
-        Console.WriteLine($"Changed: {e.FullPath}");
+        logger.LogInformation("Changed: {FullPath}", e.FullPath );
+        
+        fileHandler.RetrieveFilenames();
     }
 
     /// <summary>

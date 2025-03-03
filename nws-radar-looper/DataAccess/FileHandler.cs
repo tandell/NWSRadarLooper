@@ -13,6 +13,28 @@ namespace com.tandell.nws_radar_looper.DataAccess;
 public class FileHandler(SettingsDto settings, ILogger<FileHandler> logger)
 {
     /// <summary>
+    /// Retrieves a list of the filenames that were last 
+    public void RetrieveFilenames() 
+    {
+        ValidateBasePath(settings.BasePath);
+        try
+        {
+            var filesInOrder = new DirectoryInfo(settings.BasePath).GetFiles("*.gif")
+                        .OrderByDescending(f => f.LastWriteTime)
+                        .Select(f => f.Name)
+                        .ToList();
+
+            foreach( string file in filesInOrder ) 
+            {
+                logger.LogInformation("[{filename}]", file);
+            }
+        } catch(Exception e) {
+            logger.LogError(e, "UMMM");
+        }
+    }
+
+
+    /// <summary>
     /// Compute the MD5 sum of the provided file. Caution, not for use with medium and larger size
     /// files.
     /// No error handling, so make sure the file exists and is readable before use.
