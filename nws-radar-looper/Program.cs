@@ -29,6 +29,12 @@ if( configurationConfiguration == null )
     //TODO figure out what to do in case of invalid configuration
     throw new Exception("Invalid configuration configuration, check README.md");
 }
+PublishDto? publishConfiguration = builder.Configuration.GetRequiredSection("Publish")?.Get<PublishDto>() ?? null;
+if( publishConfiguration == null )
+{
+    //TODO figure out what to do in case of invalid configuration
+    throw new Exception("Invalid publish configuration, check README.md");
+}
 
 // Register the service to download the images
 builder.Services.AddHostedService<RetrieverWorker>();
@@ -51,6 +57,7 @@ services.AddSingleton<NwsHttpClient>();
 // Hosted Worker Clients
 services.AddSingleton<NwsClient>();
 services.AddSingleton<FileClient>();
+services.AddSingleton<PublishClient>();
 
 services.AddSingleton<FileHandler>();
 
@@ -58,6 +65,7 @@ services.AddSingleton<FileHandler>();
 services.AddSingleton<ConfigurationDto>(configurationConfiguration);
 services.AddSingleton<SettingsDto>(settingsConfiguration);
 services.AddSingleton<ArchiveDto>(archiveConfiguration);
+services.AddSingleton<PublishDto>(publishConfiguration);
 
 var host = builder.Build();
 host.Run();
