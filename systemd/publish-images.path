@@ -1,6 +1,9 @@
-[Path]
-# Directory where the radar images are "published"
-PathWatch=/media/holding/nws/nws-publish
+[Unit]
+Description=Watch for published radar images
 
-# Limit the files by pattern to reduce chatter
-PathPatterns=*.gif
+[Path]
+PathChanged=/media/holding/nws/nws-publish
+Unit=publish-images.service
+
+[Install]
+WantedBy=multi-user.target
