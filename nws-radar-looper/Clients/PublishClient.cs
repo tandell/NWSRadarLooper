@@ -162,7 +162,7 @@ public class PublishClient(
     /// </summary>
     string GenerateAnimatedGif(IList<string> files) 
     {
-        var outputFile = publishConfiguration.BasePath + "/animated.gif";
+        var outputFile = publishConfiguration.BasePath + "animated.gif";
         using (var collection = new MagickImageCollection())
         {
             for (int i = 0; i < files.Count; i++)

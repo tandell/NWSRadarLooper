@@ -1,6 +1,8 @@
 # Tasks
 
 - Validate that the `User-Agent` logic works as expected.
+- Need to make sure when assembling the paths to use the libraries; otherwise will need to watch out for trailing `\` characters.
+
 
 ## Future Enhancements
 
@@ -22,7 +24,7 @@
   - keep this running if it dies.
   - https://devblogs.microsoft.com/dotnet/net-core-and-systemd/
 
-  
+
 - Validate that the email for the User-Agent has been provided. Nothing fancy at first, just that there's a value.
 - Save headers to json for later processing - zip file entries can have a huge comment. Take the json file and insert it as a comment to the zip file. Determine json format for the comment as well.
 - ~When a new image is retrieved, it should a) be copied to a "current" image; b) trigger the animated gif logic so that a new loop is generated.~
