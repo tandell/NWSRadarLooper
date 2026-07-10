@@ -17,9 +17,12 @@
   - https://github.com/dlemstra/Magick.NET
   - https://kb.aspose.com/imaging/net/how-to-create-gif-from-images-in-csharp/
   - https://learn.microsoft.com/en-us/dotnet/architecture/microservices/multi-container-microservice-net-applications/background-tasks-with-ihostedservice
+
 - Create a systemd file to run this as a service on linux
   - keep this running if it dies.
   - https://devblogs.microsoft.com/dotnet/net-core-and-systemd/
+
+  
 - Validate that the email for the User-Agent has been provided. Nothing fancy at first, just that there's a value.
 - Save headers to json for later processing - zip file entries can have a huge comment. Take the json file and insert it as a comment to the zip file. Determine json format for the comment as well.
 - ~When a new image is retrieved, it should a) be copied to a "current" image; b) trigger the animated gif logic so that a new loop is generated.~

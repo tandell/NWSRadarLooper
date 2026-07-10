@@ -30,7 +30,7 @@ public class FileClient(ArchiveDto archiveConfiguration, SettingsDto settings, F
         {
             return;
         }
-        //logger.LogInformation("Changed: {FullPath}", e.FullPath);
+
         logger.LogInformation("Changed: {FullPath}", e.FullPath );
         
         fileHandler.RetrieveFilenames();

@@ -30,9 +30,6 @@ In the configuration, it requires a radar station to be provided. There's not a 
 - `Settings:NwsRestApiUrl`: The base URL for the National Weather Service REST API
 - `Settings:Station`: The NWS Station Id for the radar images; e.g. KIWA, KCBX, etc
 
-### Storage Details
-- `Storage`: Details of where to store the downloaded Radar images and such
-
 ### Archive Details
 - `Archive:BasePath`: The path where the archives will be saved, needs to be readable/writable by the program. The system will check that it exists and the permissions are correct.
 - `Archive:FilePattern`: This is the format applied to the date so it's compact and scriptable
@@ -47,7 +44,7 @@ In the configuration, it requires a radar station to be provided. There's not a 
 
 ## Cavets
 
-This project does create and delete files. While care has been taken to prevent unintended damage, there are no guarantees. Take care with the settings and verify them before executing.
+This project does create and delete files and directories. While care has been taken to prevent unintended damage, there are no guarantees. Take care with the settings and verify them before executing.
 
 ## References
 

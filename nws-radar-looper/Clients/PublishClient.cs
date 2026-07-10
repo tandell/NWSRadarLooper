@@ -90,8 +90,7 @@ public class PublishClient(
 
         if (fileInfoList.Any())
         {
-            // 20260704T2013Z-0.gif
-            logger.LogError($"The newest file is: {fileInfoList.First().Name}");
+            logger.LogInformation($"The newest file is determined to be: {fileInfoList.First().Name}");
             return fileInfoList.First().Name;
         }
 
