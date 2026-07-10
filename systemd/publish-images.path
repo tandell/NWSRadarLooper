@@ -1,0 +1,6 @@
+[Path]
+# Directory where the radar images are "published"
+PathWatch=/media/holding/nws/nws-publish
+
+# Limit the files by pattern to reduce chatter
+PathPatterns=*.gif
