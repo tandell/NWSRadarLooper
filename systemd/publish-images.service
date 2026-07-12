@@ -21,8 +21,7 @@ LATEST="${SRC_DIR}/latest.gif" \
 mkdir -p "$DEST_DIR" \
 \
 install -m0644 "$ANIM" "$DEST_DIR/animated.gif" \
-install -m0644 "$LATEST" "$DEST_DIR/latest.gif" \
-'
+install -m0644 "$LATEST" "$DEST_DIR/latest.gif"'
 
 StandardOutput=journal
 StandardError=journal
