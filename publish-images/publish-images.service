@@ -9,7 +9,7 @@ Group=www-data
 Environment="SRC_DIR=/media/holding/nws/nws-publish"
 Environment="DEST_DIR=/var/www/html/nws"
 
-ExecStart=/home/carran/working/nws-radar-looper/publish-images/publish-images.sh
+ExecStart=/opt/nws-radar-looper/publish-images/publish-images.sh
 
 StandardOutput=journal
 StandardError=journal
