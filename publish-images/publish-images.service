@@ -9,16 +9,7 @@ Group=www-data
 Environment="SRC_DIR=/media/holding/nws/nws-publish"
 Environment="DEST_DIR=/var/www/html/nws"
 
-ExecStart=/usr/bin/bash -c ' \
-set -euo pipefail \
-\
-ANIM="${SRC_DIR}/animated.gif" \
-LATEST="${SRC_DIR}/latest.gif" \
-\
-mkdir -p "$DEST_DIR" \
-\
-install -m0644 "$ANIM" "$DEST_DIR/animated.gif" \
-install -m0644 "$LATEST" "$DEST_DIR/latest.gif"'
+ExecStart=/home/carran/working/nws-radar-looper/publish-images/publish-images.sh
 
 StandardOutput=journal
 StandardError=journal
