@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+SRC_DIR="/media/holding/nws/nws-publish"
+DEST_DIR="/var/www/html/nws"
+
 ANIM="${SRC_DIR}/animated.gif"
 LATEST="${SRC_DIR}/latest.gif"
 
